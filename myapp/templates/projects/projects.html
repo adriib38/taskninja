@@ -1,0 +1,40 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Projects{% endblock %}
+
+{{project.name}}
+
+{% block content %}
+<h1 id="title-project">Proyectos: ({{projects.count}})</h1>
+<a href="{% url 'create_project' %}" class="label-box lb-mini">+ Create project</a>
+<div class="">
+
+    {% if projects.count == 0 %}
+        <h1>No projects yet.</h1>
+    {% else %}
+
+    <!-- Imprimir lista proyectos -->
+
+    {% for project in projects %}
+
+        <article id="project-{{project.id}}" class="project-card">
+            <h3>{{project.name}}</h3>
+            <p>{{project.description}}</p>
+
+            <div class="btns-task">
+               
+                <button class="btn-delete" onclick="deleteProject({{project.id}})">Eliminar</button>
+
+                <a class="btn-view-tasks" href="/project/{{project.id}}">Ver tareas</a>
+                <br>
+            
+            </div>
+        </article>
+
+    {% endfor %}
+      
+
+    {% endif %}
+</div>
+
+{% endblock %}

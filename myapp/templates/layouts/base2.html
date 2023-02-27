@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" href="{% static 'logo.png' %}">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+</head>
+    <body>
+
+        <nav class="horizontal">
+      
+            <img src="{% static 'logo.png' %}" id="nav-logo" alt="logo">
+         
+            <div>
+                <a href="{% url 'index' %}">Home</a>
+            </div>
+            <div>
+                <a href="{% url 'signin' %}">Login</a>
+            </div>
+            <div>
+                <a href="{% url 'signup' %}">Register</a>
+            </div>
+            <div>
+                <a href="{% url 'about' %}">About</a>
+            </div>
+
+        </nav>
+
+        <div id="container" class="no-marg-lft">
+            {% block content %}
+            
+            {% endblock %}
+        </div>
+        
+        <footer>
+            <p>Another project of <a href="https://github.com/adriib38" target="_blank">Adrián Benítez</a></p>
+        </footer>
+
+        
+        <script src="{% static 'js/categoriesColors.js' %}"></script>
+    </body>
+    
+</html>

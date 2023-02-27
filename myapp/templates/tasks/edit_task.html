@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Edit task{% endblock %}
+
+{% block content %}
+   
+    <form method="POST" id="edit-task">
+        <h1>Edit a Task</h1>
+        <h2>{{ task.title }} - <a href="/project/{{taskProject.id}}">{{ taskProject.name }}</a> </h2>
+    
+        <div>
+            {% csrf_token %}
+            
+            {{ form.title.label_tag }}
+            {{ form.title }}
+
+            {{ form.description.label_tag }}
+            {{ form.description }}
+
+            {{ form.project.label_tag }}
+            {{ form.project }}
+
+            
+            {{ form.date_limit.label_tag }}
+            {{ form.date_limit }}
+
+            {{ form.categories.label_tag }}
+            {{ form.categories }}
+
+       
+            <button id="update-task">
+                Update
+            </button>
+        </div>
+    </form>
+    
+
+{% endblock %}

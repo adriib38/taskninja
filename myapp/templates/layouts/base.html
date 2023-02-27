@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" href="{% static 'logo.png' %}">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+</head>
+    <body>
+
+        <nav class="vertical">
+      
+            <img src="{% static 'logo.png' %}" id="nav-logo" alt="logo">
+
+            <div>
+                <a href="{% url 'index' %}">Home</a>
+            </div>
+
+            {% if user.is_authenticated %}
+                <div>
+                    <a href="{% url 'projects' %}">Projects</a>
+                </div>
+                <div>
+                    <a href="{% url 'tasks' %}">Tasks</a>
+                </div>
+                <div>
+                    <a href="{% url 'teams' %}">Teams <span class="small-plus">BETA</span></a>
+                </div>
+            {% endif %}
+
+            <section id="bottom">
+                {% if user.is_authenticated == False %}
+                    <div>
+                        <a href="{% url 'signin' %}">Login</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'signup' %}">Register</a>
+                    </div>
+                {% else %}
+                    <div>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'account' %}">Account</a>
+                    </div>
+                {% endif %}
+
+                <div>
+                    <a href="{% url 'about' %}">About</a>
+                </div>
+            </section>
+
+        </nav>
+
+        <div id="container">
+            {% block content %}
+            
+            {% endblock %}
+        </div>
+        
+        <footer>
+            <p>Another project of <a href="https://github.com/adriib38" target="_blank">Adrián Benítez</a></p>
+        </footer>
+
+        
+        <script src="{% static 'js/categoriesColors.js' %}"></script>
+        <script src="{% static 'js/api.js' %}"></script>
+    </body>
+    
+</html>

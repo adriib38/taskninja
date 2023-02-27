@@ -1,0 +1,45 @@
+{% extends 'layouts/base2.html' %}
+
+{% load i18n %}
+{% load static %}
+
+{% block title %}TaskNinja{% endblock %}
+
+{% block content %}
+    <div class="center left">
+        <h1 id="title-index">Staying organized <br> is <span class="green">easy.</span></h1>
+ 
+        <div class="flex">
+            <a href="{% url 'signin' %}" class="label-box">Sign in</a>
+            <a href="{% url 'signup' %}" class="label-box">Register</a>
+        </div>
+
+        <div>
+            <div>
+                <p>
+                    TaskNinja is a simple and intuitive task manager that helps you get things done. <br>
+                    It's free and easy to use.
+                </p>
+                <p>
+                    You can use TaskNinja to manage your personal tasks, or to collaborate with your team. <br>
+                    TaskNinja is available on all your devices, so you can access your tasks from anywhere.
+                </p>
+                <p>
+                    To get started, <a href="{% url 'signup' %}">register</a> for a free account. <br>
+                    You can also <a href="{% url 'signin' %}">sign in</a> if you already have an account.
+                    And create your first project. <br>
+                    It's that easy!
+                </p>
+                <p>
+                    You can create as many tasks as you want, and organize them in projects. <br>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="right">
+        <img id="img-index" src="static/ninja3.png" alt="">
+    </div>
+
+    <script src="static/js/index.js"></script>
+{% endblock %}
+

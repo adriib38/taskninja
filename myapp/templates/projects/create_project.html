@@ -1,0 +1,21 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}New project{% endblock %}
+
+{% block content %}
+    
+    {{form.errors}}
+
+    <form method="POST" id="create-project">
+        <h1>Create a new project</h1>
+        <div>
+            {% csrf_token %}
+            {{form.as_p}}
+      
+            <button id="save-project">
+                Create project
+            </button>
+        </div>
+    </form>
+
+{% endblock %}

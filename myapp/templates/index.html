@@ -1,0 +1,61 @@
+{% extends 'layouts/base.html' %}
+
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <div id="welcome">
+            <h2>Welcome, {{ user.username }} &#128075;</h2>
+        </div>
+
+        <div id="today">
+            <h1>
+                {{todayStr}}
+            </h1>
+        </div>
+        
+        <div class="inline-links">
+            <a href="{% url 'tasks' %}" class="label-box">
+                Tasks pending: {{numTasksPending}}
+            </a>
+
+            <a href="{% url 'tasks' %}" class="label-box">
+                &#10071 Tasks for today: {{numTasksPendingToday}}
+            </a>
+        </div>
+
+        <hr>
+        <h2>My projects</h2>
+        {% for project in projectsWithTasksNumber %}
+            <a href="{% url 'project' project.project.id %}" class="label-box lb-project">
+                {{project.project.name}}: {{project.numTasks}}
+            </a>
+        {% endfor %}
+        <hr>
+
+        <div id="trending-categories">
+            <h2>Trending</h2>
+            {% if categoriesTasksList|length == 0 %}
+                <p>Dont have any categories yet</p>
+            {% endif %}
+            {% for category in categoriesTasksList %}
+                <article class="category">
+                    <a href="{% url 'category' category %}">
+                        <label>#{{category}}</label>
+                    </a>
+                </article>
+            {% endfor %}
+        </div>
+
+    {% else %}
+
+
+    {% endif %}
+        
+   
+
+
+{% endblock %}

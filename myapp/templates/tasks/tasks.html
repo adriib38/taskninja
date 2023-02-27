@@ -1,0 +1,139 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Tasks: {{numTasks}}{% endblock %}
+
+{% block content %}
+
+    <h1 id="title-tasks">Tasks: ({{tasks.count}})</h1>
+    <a href="{% url 'create_task' %}" class="label-box lb-mini">+ Create task</a>
+    {% if tasks.count == 0 %}
+        <h1>No tasks yet.</h1>
+    {% else %}
+    
+        <!-- Vista de tareas por tabla -->
+
+        <table id="table-tasks" class="table-tasks">
+            <thead>
+                <tr>
+                    <th>Titulo</th>
+                    <th>Descripcion</th>
+                    <th>Fecha limite</th>
+                    <th>Proyecto</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="undone-tasks">
+                {% for task in tasksPending %}
+                    <tr id="task-{{task.id}}">
+                        <td>{{task.title}}</td>
+                        <td>{{task.description}}</td>
+
+                        {% if task.today %}
+                            <td class="task-today">Today</td>
+                        {% else %}
+
+                            <td>{{task.date_limit}}</td>
+
+                        {% endif %}
+
+                        {% if task.project %}
+                            <td><a href="{% url 'project' task.project.id %}">{{task.project.name}}</a></td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
+                    
+                        <td>
+                            <p id="task-status" class="task-status-pending">Pending</p>
+                            {% for category in task.categories %}
+                                <a href="/category/{{category}}" class="category">
+                                    <span class="task-category">{{category}}</span>
+                                </a>
+                            {% endfor %}
+                        </td>
+                        <td class="tasks-table-actions">
+                        
+                            <button id="btn-delete-{{task.id}}" class="btn-delete" onclick="deleteTask({{task.id}})">&#128465; Delete</button>
+                    
+                            <button id="btn-done-{{task.id}}" class="btn-done btn-done-{{task.id}}" onclick="doneTask({{task.id}})">Done</button>
+                            
+                            <form action="{% url 'edit_task' task.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{task.id}}">
+                                <input type="hidden" name="redirect_url" value="/tasks/">
+                                <button type="submit" class="btn-edit">Edit</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div>
+            <button id="tasks-done-table">&#8595; Tasks done &#8595;</button>
+        </div>
+        <table id="table-tasks" class="table-tasks-done hidden">
+            <thead>
+                <tr>
+                    <th>Titulo</th>
+                    <th>Descripcion</th>
+                    <th>Fecha limite</th>
+                    <th>Proyecto</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="done-tasks">
+                {% for task in tasksDone %}
+                    <tr id="task-{{task.id}}">
+                        <td>{{task.title}}</td>
+                        <td>{{task.description}}</td>
+                        {% if task.today %}
+                            <td class="task-today">Today</td>
+                        {% else %}
+    
+                            <td>{{task.date_limit.day}}/{{task.date_limit.month}}/{{task.date_limit.year}}</td>
+                        {% endif %}
+
+                        {% if task.project %}
+                            <td><a href="{% url 'project' task.project.id %}">{{task.project.name}}</a></td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
+                    
+                        <td>
+                            <p id="task-status" class="task-status-done">Done</p> {{task.date_done.day}}/{{task.date_done.month}}/{{task.date_done.year}}
+                        </td>
+
+                        <td class="tasks-table-actions">
+                            <button id="btn-delete-{{task.id}}" class="btn-delete" onclick="deleteTask({{task.id}})">&#128465; Delete</button>
+               
+                            <button id="btn-undone-{{task.id}}" class="btn-undone btn-done-{{task.id}}" onclick="undoneTask({{task.id}})">Undone</button>
+
+                            <form action="{% url 'edit_task' task.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{task.id}}">
+                                <input type="hidden" name="redirect_url" value="/tasks/">
+                                <button type="submit" class="btn-edit">Edit</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+       
+    {% endif %}
+
+    <script>
+        try{
+            const btnTasksDone = document.querySelector('#tasks-done-table');
+            const tableTasksDone = document.querySelector('.table-tasks-done');
+            btnTasksDone.addEventListener('click', () => {
+                tableTasksDone.classList.toggle('hidden');
+            });
+        }catch(e){
+            
+        }
+    </script>
+
+{% endblock %}

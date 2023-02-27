@@ -1,0 +1,26 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Signin{% endblock %}
+
+{% block content %}
+
+<h1>{{ title }}</h1>
+
+<p class="auth-error">{{ error }}</p>
+
+<form action="/signin/" method="POST" id="form-signin">
+    {% csrf_token %}
+       
+        <p>
+            {{ authenticationForm.username.label_tag }}
+            {{ authenticationForm.username }}
+        </p>
+        <p>
+            {{ authenticationForm.password.label_tag }}
+            {{ authenticationForm.password }}
+        </p>
+
+    <button>Signin</button>
+</form>
+
+{% endblock %}

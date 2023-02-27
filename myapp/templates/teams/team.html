@@ -1,0 +1,61 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}{{ team.name }}{% endblock %}
+
+{% block content %}
+    <h1>{{ team.name }} <span class="small">Team</span></h1>
+
+    <p>All memebers of this team can see and edit all projects of this team.</p>
+
+    <span class="red">{{ msgError }}</span>
+
+    <div class="light-container">
+        <h2>Projects</h2>
+        <ul>
+        {% for project in projectsTeam %}
+            <li>
+                <a href="{% url 'project' project.id %}">{{ project.name }}</a> 
+                <ol>
+                    - {{ project.description }}
+                </ol>
+                <ol>
+                    - <span class="small">{{ project.created_at }}</span>
+                </ol>
+            </li>
+        {% endfor %}
+        </ul>
+
+        <h3>Create a project</h3>
+        <!-- Form create project -->
+        <form action="{% url 'team' team.id %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="project_name" placeholder="Enter a project name">
+            <textarea name="project_description" placeholder="Enter a project description"></textarea>
+            <input type="hidden" name="action" value="create_project">
+            <input type="hidden" name="team_id" value="{{ team.id }}">
+            <input class="btnCreateProject bg-green" type="submit" value="Create">
+        </form>
+    </div>
+
+    <hr>
+
+    <div class="light-container">
+        <h2>Members</h2>
+        <ul>
+            {% for member in membersTeam %}
+                <li>{{ member.username }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Add a member</h3>
+        <form id="add-member-project" action="{% url 'team' team.id %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="new_member" placeholder="Enter a username">
+            <input type="hidden" name="action" value="add_member">
+            <input type="hidden" name="team_id" value="{{ team.id }}">
+            <input class="btnAddMemberProject bg-green" type="submit" value="Add">
+        </form>
+    </div>
+
+
+{% endblock %}

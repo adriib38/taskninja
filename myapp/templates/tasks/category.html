@@ -1,0 +1,53 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}#{{ category }}{% endblock %}
+
+{% block content %}
+    <h1>#{{ category }}</h1>
+    <h2> {{ tasks|length }} tasks </h2>
+
+    {% if tasks|length == 0 %}
+        <p>No hay tareas en esta categoría</p>
+    {% endif %}
+
+    {% for task in tasks %}
+
+        <article id="task-{{task.id}}" class="task-card">
+            <h2>&#128337; {{task.title}}</h2>
+
+            {% for category in task.categories %}
+                <a href="/category/{{category}}" class="category">
+                    <span class="task-category">{{category}}</span>
+                </a>
+            {% endfor %}
+
+            <p>{{task.description}}</p>
+            
+            <p class="date-limit">Deadline: {{task.date_limit.day}}/{{task.date_limit.month}}/{{task.date_limit.year}}
+                {% if task.today %}
+                    <span class="task-today">(Hoy)</span>
+                {% endif %}
+            </p>
+
+            <p>Proyecto: {{task.project.name}}</p>
+                
+            <div class="btns-task">
+                <button class="btn-delete" onclick="deleteTask({{task.id}})">Delete</button>
+                
+                <button class="btn-done btn-done-{{task.id}}" onclick="doneTask({{task.id}})">Done</button>
+
+                <form action="{% url 'edit_task' task.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{task.id}}">
+                    <button type="submit" class="btn-edit">Edit</button>
+                </form>
+            </div>
+
+        </article>
+
+    {% endfor %}
+    
+    <div id="done-tasks" style="display: none">
+    </div>
+
+{% endblock %}

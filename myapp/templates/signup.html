@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Signup{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+
+    <p class="auth-error">{{error}}</p>
+
+    <form method="POST" id="form-signup">
+        {% csrf_token %}
+
+        {{userCreationForm.non_field_errors}}
+
+        {{userCreationForm.username.errors}}
+        <p>
+            {{userCreationForm.username.label_tag}}
+            {{userCreationForm.username}}
+        </p>
+
+        <p>
+            {{userCreationForm.password1.errors}}
+            {{userCreationForm.password1.label_tag}}
+            {{userCreationForm.password1}}
+        </p>
+
+        <p>
+            {{userCreationForm.password2.errors}}
+            {{userCreationForm.password2.label_tag}}
+            {{userCreationForm.password2}}
+        </p>
+
+        <button>
+            Signup
+        </button>
+    </form>
+
+{% endblock %}

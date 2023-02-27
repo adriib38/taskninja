@@ -1,0 +1,19 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Teams{% endblock %}
+
+{% block content %}
+    <h1>Teams <span class="small">BETA</span></h1>
+    <p>Here are the teams you are a member of.</p>
+    <a class="label-box lb-mini" href={% url 'create_team' %}>+ Create Team</a>
+
+    {% for team in userAdminTeams %}
+        <div class="team dark-container">
+            <h2>{{ team.name }}</h2>
+            <p>{{ team.description }}</p>
+            <a href="/team/{{ team.id }}">View Team</a>
+        </div>
+
+    {% endfor %}
+
+{% endblock %}

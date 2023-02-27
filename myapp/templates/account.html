@@ -1,0 +1,28 @@
+{% extends 'layouts/base.html' %}
+
+{% load static %}
+
+{% block title %}Account{% endblock %}
+
+{% block content %}
+
+    <div id="account-username">
+        <h1>@{{ user.username }}</h1>
+        {% if user.is_superuser %}
+            &#10004 Admin
+        {% endif %}
+
+        {% if user.is_staff %}
+            &#10004 Staff
+        {% endif %}
+    </div>
+
+    <div id="account-actions">
+        <a href="{% url 'password_change' %}" class="blue">Change password</a>
+        <a href="{% url 'api_docs' %}" class="black">TaskNinja {API}</a>
+        <a href="{% url 'delete_account' %}" class="red">Delete account</a>
+    </div>
+ 
+  
+
+{% endblock %}

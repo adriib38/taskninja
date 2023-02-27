@@ -1,0 +1,19 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}New task{% endblock %}
+
+{% block content %}
+   
+    <form method="POST" id="create-task">
+        <h1>Create a new task</h1>
+        <div>
+            {% csrf_token %}
+            {{form.as_p}}
+            <button id="save-task">
+                Create task
+            </button>
+        </div>
+    </form>
+    
+
+{% endblock %}

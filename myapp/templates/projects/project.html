@@ -1,0 +1,106 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}{{project.name}}{% endblock %}
+
+{% block content %}
+
+<h1>{{project.name}}</h1>
+<p>{{project.description}}</p>
+{% if project.team_id %}
+    <a class="green small" href="/team/{{project.team_id}}">Team</a>
+{% endif %}
+
+
+<h2>Tareas {{tasksPending.count}}: </h2>
+<div id="undone-tasks" class="deck">
+    {% for task in tasksPending %}
+        <article id="task-{{task.id}}" class="task-card">
+            <h2><span class="emoji">&#128337;</span> {{task.title}}</h2>
+
+            <p id="task-status" class="task-status-pending">Pending</p>
+
+            <br>
+
+            {% for category in task.categories %}
+                <a href="/category/{{category}}" class="category">
+                    <span class="task-category">{{category}}</span>
+                </a>
+            {% endfor %}
+
+            <p>{{task.description}}</p>
+            
+            <p class="date-limit">Deadline: {{task.date_limit.day}}/{{task.date_limit.month}}/{{task.date_limit.year}}
+                {% if task.today %}
+                    <span class="task-today">(Hoy)</span>
+                {% endif %}
+            </p>
+
+            <p>Proyecto: {{task.project.name}}</p>
+                
+            <div class="btns-task">
+                <button class="btn-delete" onclick="deleteTask({{task.id}})">Delete</button>
+                
+                <button class="btn-done btn-done-{{task.id}}" onclick="doneTask({{task.id}})">Done</button>
+
+                <form action="{% url 'edit_task' task.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{task.id}}">
+                    <button type="submit" class="btn-edit">Edit</button>
+                </form>
+
+            </div>
+        </article>
+    {% endfor %}
+</div>
+
+<hr>
+
+<h2>Tareas hechas {{tasksDone.count}}: </h2>
+<div id="done-tasks" class="deck">
+    {% for task in tasksDone %}
+
+    <article id="task-{{task.id}}" class="task-card">
+        <h2>&#9989; {{task.title}}</h2>
+
+        <p id="task-status" class="task-status-done">Done</p>
+
+        <br>
+
+        {% for category in task.categories %}
+            <a href="/category/{{category}}" class="category">
+                <span class="task-category">{{category}}</span>
+            </a>
+        {% endfor %}
+
+        <p>{{task.description}}</p>
+        
+        <p class="date-limit">Deadline: {{task.date_limit.day}}/{{task.date_limit.month}}/{{task.date_limit.year}}
+            {% if task.today %}
+                <span class="task-today">(Hoy)</span>
+            {% endif %}
+        </p>
+
+        <p>Proyecto: {{task.project.name}}</p>
+            
+        <div class="btns-task">
+            <button class="btn-delete" onclick="deleteTask({{task.id}})">Delete</button>
+            
+            <button class="btn-undone btn-undone-{{task.id}}" onclick="undoneTask({{task.id}})">Undone</button>
+
+            <form action="{% url 'edit_task' task.id %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{task.id}}">
+                <button type="submit" class="btn-edit">Edit</button>
+            </form>
+
+        </div>
+    </article>
+    {% endfor %}
+    
+
+</div>
+
+
+
+
+{% endblock %}
