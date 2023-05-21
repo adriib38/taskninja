@@ -23,3 +23,24 @@
 
 [![portfolio](https://img.shields.io/badge/mi_portfolio-34D399?style=for-the-badge&logo=ko-fi&logoColor=white)](https://adrianbenitez.vercel.app/)[![github](https://img.shields.io/badge/github-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/adriib38)[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/adrián-bntz) 
 
+
+## Deployment
+
+Pasos para iniciar la aplicación:
+
+#### Instalar dependencias
+```bash
+  pip install -r requirements.txt
+```
+
+#### Generar base de datos con modelos
+```bash
+  python manage.py migrate
+```
+
+#### Iniciar aplicación
+```bash
+  python manage.py runserver
+```
+
+#### 🥷 Felicidades! Ya eres un ninja de la productividad 🥷
