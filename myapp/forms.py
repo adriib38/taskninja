@@ -52,12 +52,14 @@ class EditTaskForm(forms.Form):
         super(EditTaskForm, self).__init__(*args, **kwargs)
         self.fields['project'].queryset = Project.objects.filter(user=user)
 
-    title = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={'placeholder': 'New title'}))
-    description = forms.CharField(widget=forms.Textarea)
+    title = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={'placeholder': 'News title'}))
+    description = forms.CharField(widget=forms.Textarea, required=False)
+
     #project, puede ser null
     project = forms.ModelChoiceField(queryset=Project.objects.none(), required=False, empty_label="Sin proyecto")
     date_limit = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     categories = forms.CharField(max_length=255, required=False, widget=forms.Textarea(attrs={'placeholder': 'Categories separated by ;'}))
+
 
 class CreateNewProject(forms.Form):
     name = forms.CharField(label='Nombre del proyecto', max_length=200)

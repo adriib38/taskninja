@@ -49,8 +49,14 @@ def index(request):
     for task in Task.objects.filter(user_id=request.user.id, done=False):
         taskCategories = task.categories.split(';')
         for category in taskCategories:
-            if category not in categoriesTasksList:
-                categoriesTasksList.append(category)
+            if category.strip() not in categoriesTasksList:
+                categoriesTasksList.append(category.strip())
+
+    #Si la lista tiene 1 elemento vaciarla
+    if len(categoriesTasksList) == 1 and categoriesTasksList[0] == '':
+        categoriesTasksList = []
+
+
 
     #Si esta logueado
     if request.user.is_authenticated:
@@ -170,8 +176,8 @@ def tasks(request):
     todayDate = date.today()
 
     for task in tasksPending:
-        categoriesList = (task.categories).split(";")
-        task.categories = categoriesList
+        categoriesList = list(set(category.strip() for task in Task.objects.filter(user_id=request.user.id, done=False) for category in task.categories.split(';') if category.strip()))
+
 
         #Comvertir fecha task.date_limit para compararla con todayDate
         today = date.today().strftime("%d/%m/%Y")
@@ -389,38 +395,37 @@ def undone_task(request, id):
 @login_required
 def edit_task(request, id):
     task = get_object_or_404(Task, pk=id)
-    form = TaskForm(request.user, request.POST, task)
-    if request.method == 'POST':
-      
-        if form.is_valid():
-            #quitar espacios en blanco de principio y final de cada categoria
-            categories = form.cleaned_data['categories']
-            categories = categories.strip()
-            categories = categories.split(';')
-            categories = [category.strip() for category in categories]
-            categories = ';'.join(categories)
-            form.cleaned_data['categories'] = categories
 
-            cleaned_data = form.cleaned_data
-            
-            #Actualizar tarea
-            task.title = cleaned_data['title']
-            task.description = cleaned_data['description']
-            task.categories = cleaned_data['categories']
-            task.project_id = cleaned_data['project']
-            task.date_limit = cleaned_data['date_limit']
-            
+    if request.method == 'POST':
+        form = EditTaskForm(request.user, request.POST)
+        if form.is_valid():
+            # Limpiar y formatear las categorías
+            categories = form.cleaned_data['categories']
+            categories = [category.strip() for category in categories.split(';')]
+            cleaned_categories = ';'.join(categories)
+            form.cleaned_data['categories'] = cleaned_categories
+
+            # Actualizar tarea
+            task.title = form.cleaned_data['title']
+            task.description = form.cleaned_data['description']
+            task.categories = form.cleaned_data['categories']
+            task.project = form.cleaned_data['project']
+            task.date_limit = form.cleaned_data['date_limit']
             task.save()
 
             return redirect('/tasks/')
     else:
-        form = TaskForm(request.user, request.POST, task)
-    
-    #El campo project de una tarea puede ser nulo, por lo que se debe comprobar si es nulo o no para poder enviarlo a la vista edit_task.html
-    if task.project_id is not None:
-        taskProject = task.project
-    else:
-        taskProject = None
+        form = EditTaskForm(request.user, initial={
+            'title': task.title,
+            'description': task.description,
+            'project': task.project,
+            'date_limit': task.date_limit,
+            'categories': task.categories,
+        })
+
+    # El campo project de una tarea puede ser nulo, por lo que se debe comprobar si es nulo o no
+    # para poder enviarlo a la vista edit_task.html
+    taskProject = task.project if task.project_id is not None else None
 
     return render(request, 'tasks/edit_task.html', {
         'form': form,

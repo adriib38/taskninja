@@ -31,7 +31,7 @@ class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title + " - " + self.project.name
+        return self.title
 
 # Modelo Team
 class Team(models.Model):

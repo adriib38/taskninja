@@ -1,4 +1,6 @@
 from django.urls import path, include
+
+from taskninja.myapp import admin
 from . import views
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth import views as auth_views
