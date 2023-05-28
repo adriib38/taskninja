@@ -27,14 +27,17 @@
                 {% for task in tasksPending %}
                     <tr id="task-{{task.id}}">
                         <td>{{task.title}}</td>
-                        <td>{{task.description}}</td>
+
+                        {% if task.description %}
+                            <td>{{task.description}}</td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
 
                         {% if task.today %}
                             <td class="task-today">Today</td>
                         {% else %}
-
                             <td>{{task.date_limit}}</td>
-
                         {% endif %}
 
                         {% if task.project %}

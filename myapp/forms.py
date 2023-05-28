@@ -36,7 +36,7 @@ class TaskForm(forms.Form):
         self.fields['project'].queryset = Project.objects.filter(user=user)
 
     title = forms.CharField(max_length=255)
-    description = forms.CharField(widget=forms.Textarea)
+    description = forms.CharField(widget=forms.Textarea, required=False)
     #project, puede ser null
     project = forms.ModelChoiceField(queryset=Project.objects.none(), required=False, empty_label="Sin proyecto")
     date_limit = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
