@@ -20,9 +20,9 @@
     <div id="account-actions">
         <a href="{% url 'password_change' %}" class="blue">Change password</a>
         <a href="{% url 'api_docs' %}" class="black">TaskNinja {API}</a>
-        <a href="{% url 'delete_account' %}" class="red">Delete account</a>
+        <a id="link-delete-account"  class="red">Delete account</a>
     </div>
  
+    <script src="{% static 'js/account.js' %}"></script>
   
-
 {% endblock %}
