@@ -16,7 +16,6 @@ function clickDeleteProject(projectId){
     })
 }
 
-
 function deleteProject(id) {
     //DELETE request with fetch
     fetch('http://127.0.0.1:8000/api/projects/' + id + '/', {
