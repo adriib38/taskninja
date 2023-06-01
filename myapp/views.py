@@ -14,7 +14,7 @@ from django.urls import reverse_lazy
 
 from django.contrib.auth.decorators import login_required
 
-#import date 
+# import date
 from datetime import date, datetime, timedelta
 
 from django.contrib.auth.views import PasswordChangeView
@@ -31,19 +31,24 @@ Rutas de la aplicación
 """
 
 # Index page
+
+
 def index(request):
     today = date.today()
     tomorrowDay = date.today() + timedelta(days=1)
     todayStr = today.strftime("%A, %d %B %Y")
-    numTasksPendingToday = Task.objects.filter(user_id=request.user.id, date_limit=today, done=False).count()
-    numTasksPending = Task.objects.filter(user_id=request.user.id, done=False).count()
+    numTasksPendingToday = Task.objects.filter(
+        user_id=request.user.id, date_limit=today, done=False).count()
+    numTasksPending = Task.objects.filter(
+        user_id=request.user.id, done=False).count()
 
     projectsUser_id = Project.objects.filter(user_id=request.user.id)
     projectsWithTasksNumber = []
     for project in projectsUser_id:
         tasks = Task.objects.filter(project_id=project.id, done=False)
-        #Añadir proyecto y número de tareas a la lista con formato 'project':project, 'tasks':len(tasks)
-        projectsWithTasksNumber.append({'project':project, 'numTasks':len(tasks)})
+        # Añadir proyecto y número de tareas a la lista con formato 'project':project, 'tasks':len(tasks)
+        projectsWithTasksNumber.append(
+            {'project': project, 'numTasks': len(tasks)})
 
     categoriesTasksList = []
     for task in Task.objects.filter(user_id=request.user.id, done=False):
@@ -52,13 +57,11 @@ def index(request):
             if category.strip() not in categoriesTasksList:
                 categoriesTasksList.append(category.strip())
 
-    #Si la lista tiene 1 elemento vaciarla
+    # Si la lista tiene 1 elemento vaciarla
     if len(categoriesTasksList) == 1 and categoriesTasksList[0] == '':
         categoriesTasksList = []
 
-
-
-    #Si esta logueado
+    # Si esta logueado
     if request.user.is_authenticated:
         return render(request, 'index.html', {
             'title': 'MyProjects',
@@ -76,10 +79,13 @@ def index(request):
         })
 
 # About page
+
+
 def about(request):
     return render(request, 'about.html', {
         'title': 'About'
     })
+
 
 def signup(request):
     if request.method == 'POST':
@@ -87,7 +93,7 @@ def signup(request):
             try:
                 # Crear usuario
                 user = User.objects.create_user(
-                    username=request.POST['username'], 
+                    username=request.POST['username'],
                     password=request.POST['password1'],
                 )
                 # Guarda el usuario en la base de datos
@@ -111,11 +117,12 @@ def signup(request):
                 'userCreationForm': UserCreationForm,
                 'error': 'Passwords must match'
             })
-        
+
     return render(request, 'signup.html', {
         'title': 'Signup',
         'userCreationForm': UserCreationForm
     })
+
 
 def signin(request):
     if request.method == 'GET':
@@ -142,6 +149,7 @@ def signin(request):
             response.set_cookie('tokenUser', request.user.auth_token.key)
             return response
 
+
 @login_required
 def signout(request):
     # Cerrar sesión
@@ -151,6 +159,8 @@ def signout(request):
 # Projects page
 # Imprime todos los proyectos de la base de datos.
 # Solo se puede acceder si el usuario está logueado.
+
+
 @login_required
 def projects(request):
     title = "Proyectos"
@@ -163,25 +173,27 @@ def projects(request):
 
 # Tasks page
 # Imprime todas las tareas de la base de datos.
+
+
 @login_required
 def tasks(request):
     title = "Tareas"
 
-    #Guardar tareas del usuario logueado
-    tasksUser = Task.objects.filter(user_id=request.user.id).order_by('date_limit')
- 
+    # Guardar tareas del usuario logueado
+    tasksUser = Task.objects.filter(
+        user_id=request.user.id).order_by('date_limit')
+
     tasksDone = tasksUser.filter(done=True)
     tasksPending = tasksUser.filter(done=False)
 
-    todayDate = date.today()
-
+    # Añadir categorias a las tareas pendientes
     for task in tasksPending:
-        categoriesList = list(set(category.strip() for task in Task.objects.filter(user_id=request.user.id, done=False) for category in task.categories.split(';') if category.strip()))
+        categoriesList = list(set(category.strip() for category in task.categories.split(';') if category.strip()))
+        task.categories = categoriesList
 
-
-        #Comvertir fecha task.date_limit para compararla con todayDate
+        #Convertir fecha task.date_limit para compararla con todayDate
         today = date.today().strftime("%d/%m/%Y")
-        # Almacenar fecha de la tarea en formato dd/mm/yyyy
+        #Almacenar fecha de la tarea en formato dd/mm/yyyy
         task.date_limit = task.date_limit.strftime("%d/%m/%Y")
         if today == task.date_limit:
             print(today)
@@ -189,12 +201,17 @@ def tasks(request):
         else:
             task.today = False
 
-        #quitar espacios en blanco de cada categoria
-        for i in range(len(task.categories)):
-            task.categories[i] = task.categories[i].strip()
+    # Añadir categorias a las tareas completadas
+    for task_done in tasksDone:
+        categoriesList = list(set(category.strip() for category in task_done.categories.split(';') if category.strip()))
+        task_done.categories = categoriesList
 
-     # Obtener token del usuario logueado
-    tokenUser = Token.objects.filter(user_id=request.user.id).first()
+    # Acortar descriciones
+    for task in tasksPending:
+        task.description = task.description[:15] + '...'
+    for task_done in tasksDone:
+        task_done.description = task_done.description[:15] + '...'
+
 
     numTasks = len(tasksUser)
     return render(request, 'tasks/tasks.html', {
@@ -206,6 +223,8 @@ def tasks(request):
     })
 
 # Teams
+
+
 @login_required
 def create_team(request):
     if request.method == 'POST':
@@ -214,7 +233,7 @@ def create_team(request):
 
         if form.is_valid():
             team.user = request.user
-            
+
             cleaned_data = form.cleaned_data
 
             Team.objects.create(
@@ -226,7 +245,8 @@ def create_team(request):
             # Añadir al usuario que crea el equipo como miembro del equipo
             TeamUser.objects.create(
                 user=user,
-                team=Team.objects.filter(name=form.cleaned_data['name']).first(),
+                team=Team.objects.filter(
+                    name=form.cleaned_data['name']).first(),
             )
 
             return redirect('teams')
@@ -238,7 +258,7 @@ def create_team(request):
 @login_required
 def teams(request):
     title = "Teams",
-    
+
     # Lista de teams del usuario logueado
     userAdminTeams = TeamUser.objects.filter(user_id=request.user.id)
     userTeams = []
@@ -252,6 +272,8 @@ def teams(request):
     })
 
 # Team
+
+
 @login_required
 def team(request, id):
     msgError = ""
@@ -262,7 +284,7 @@ def team(request, id):
     for register in registersTeamUsers:
         member = User.objects.filter(id=register.user_id).first()
         membersTeam.append(member)
-    
+
     projectsTeam = Project.objects.filter(team_id=id)
 
     if request.method == 'GET':
@@ -279,7 +301,7 @@ def team(request, id):
             member = request.POST['new_member']
 
             newMember = User.objects.filter(username=member).first()
-        
+
             # Verificar si el usuario existe
             if newMember is None:
                 msgError = "El usuario no existe"
@@ -289,7 +311,7 @@ def team(request, id):
                     'msgError': msgError,
                     'projectsTeam': projectsTeam
                 })
-            
+
             # Verificar si el usuario ya está en el equipo
             for member in membersTeam:
                 if member.username == newMember.username:
@@ -300,18 +322,18 @@ def team(request, id):
                         'msgError': msgError,
                         'projectsTeam': projectsTeam
                     })
-            
+
             member_id = newMember.id
             team_id = request.POST['team_id']
-        
+
             # Agregar miembro al equipo
             TeamUser.objects.create(
                 team_id=team_id,
                 user_id=member_id,
             )
-        
+
             return redirect('team', id=id)
-        
+
         # Crear proyecto
         if request.POST['action'] == 'create_project':
             _name = request.POST['project_name']
@@ -340,7 +362,6 @@ def team(request, id):
                     'projectsTeam': projectsTeam
                 })
 
-
             # Crear proyecto
             Project.objects.create(
                 name=_name,
@@ -361,6 +382,8 @@ def team(request, id):
 Tasks
 '''
 # Task done
+
+
 @login_required
 def done_task(request, id):
     task = get_object_or_404(Task, pk=id)
@@ -369,10 +392,12 @@ def done_task(request, id):
             task.done = True
             task.date_done = datetime.now()
             task.save()
-    
+
     return redirect(request.POST['redirect_url'])
 
 # Task delete
+
+
 @login_required
 def delete_task(request, id):
     task = get_object_or_404(Task, pk=id)
@@ -382,6 +407,8 @@ def delete_task(request, id):
     return redirect(request.POST['redirect_url'])
 
 # Task undone
+
+
 @login_required
 def undone_task(request, id):
     task = get_object_or_404(Task, pk=id)
@@ -392,6 +419,7 @@ def undone_task(request, id):
             task.save()
     return redirect(request.POST['redirect_url'])
 
+
 @login_required
 def edit_task(request, id):
     task = get_object_or_404(Task, pk=id)
@@ -401,7 +429,8 @@ def edit_task(request, id):
         if form.is_valid():
             # Limpiar y formatear las categorías
             categories = form.cleaned_data['categories']
-            categories = [category.strip() for category in categories.split(';')]
+            categories = [category.strip()
+                          for category in categories.split(';')]
             cleaned_categories = ';'.join(categories)
             form.cleaned_data['categories'] = cleaned_categories
 
@@ -434,13 +463,15 @@ def edit_task(request, id):
     })
 
 # Create task
+
+
 @login_required
 def create_task(request):
     if request.method == 'POST':
         form = TaskForm(request.user, request.POST)
 
         if form.is_valid():
-            #quitar espacios en blanco de principio y final de cada categoria
+            # quitar espacios en blanco de principio y final de cada categoria
             categories = form.cleaned_data['categories']
             categories = categories.strip()
             categories = categories.split(';')
@@ -451,23 +482,25 @@ def create_task(request):
             cleaned_data = form.cleaned_data
             Task.objects.create(
                 user=request.user,
-                title = form.cleaned_data['title'],
+                title=form.cleaned_data['title'],
                 description=request.POST['description'],
                 project=form.cleaned_data['project'],
                 date_limit=form.cleaned_data['date_limit'],
                 categories=form.cleaned_data['categories'].lower(),
             )
-          
+
             return redirect('/tasks/')
     else:
         form = TaskForm(request.user)
 
     return render(request, 'tasks/create_task.html', {'form': form})
 
+
 def category(request, name):
     title = "Category"
-    
-    tasksUser = Task.objects.filter(user_id=request.user.id, done=False).order_by('date_limit')
+
+    tasksUser = Task.objects.filter(
+        user_id=request.user.id, done=False).order_by('date_limit')
 
     tasksWithCategory = []
     for task in tasksUser:
@@ -480,10 +513,14 @@ def category(request, name):
         'tasks': tasksWithCategory,
         'category': name,
     })
+
+
 '''
 Projects
 '''
 # Create project
+
+
 @login_required
 def create_project(request):
     if request.method == 'GET':
@@ -492,7 +529,7 @@ def create_project(request):
         })
     else:
         Project.objects.create(
-            name=request.POST['name'], 
+            name=request.POST['name'],
             description=request.POST['description'],
             user=request.user
         )
@@ -500,6 +537,8 @@ def create_project(request):
         return redirect('/projects/')
 
 # Delete project
+
+
 @login_required
 def delete_project(request, id):
     project = get_object_or_404(Project, pk=id)
@@ -522,19 +561,19 @@ def project(request, id):
         categoriesList = (task.categories).split(";")
         task.categories = categoriesList
 
-        #quitar espacios en blanco de cada categoria
+        # quitar espacios en blanco de cada categoria
         for i in range(len(task.categories)):
             task.categories[i] = task.categories[i].strip()
 
-        #Añadir tarea a la lista 
+        # Añadir tarea a la lista
         tasksList.append(task)
 
         if task.done == True:
             tasksDone.append(task)
         else:
             tasksPending.append(task)
-        
-    #Combertir fecha task.date_limit para compararla con todayDate
+
+    # Combertir fecha task.date_limit para compararla con todayDate
     today = date.today().strftime("%A, %d %B %Y")
     for task in tasksPending:
         if today == task.date_limit.strftime("%A, %d %B %Y"):
@@ -547,6 +586,7 @@ def project(request, id):
         'tasksDone': tasksDone,
         'tasksPending': tasksPending
     })
+
 
 @login_required
 def account(request):
@@ -561,6 +601,7 @@ def account(request):
         'tokenUser': tokenUser
     })
 
+
 def api_docs(request):
     user = request.user
     userName = user.username
@@ -571,7 +612,6 @@ def api_docs(request):
         userToken = Token.objects.create(user=user)
 
     userToken = userToken.key
-
 
     return render(request, 'api_doc.html', {
         'title': 'API Documentation',
@@ -585,6 +625,7 @@ def delete_account(request):
     user = request.user
     user.delete()
     return redirect('/')
+
 
 @login_required
 def edit_account(request):
@@ -602,6 +643,7 @@ def edit_account(request):
         'form': form,
         'user': user
     })
+
 
 @login_required
 def PasswordChangeView(PasswordChangeView):

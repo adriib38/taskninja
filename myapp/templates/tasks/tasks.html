@@ -15,12 +15,12 @@
         <table id="table-tasks" class="table-tasks">
             <thead>
                 <tr>
-                    <th>Titulo</th>
-                    <th>Descripcion</th>
-                    <th>Fecha limite</th>
-                    <th>Proyecto</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Deadline</th>
+                    <th>Project</th>
+                    <th>Labels</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="undone-tasks">
@@ -47,15 +47,14 @@
                         {% endif %}
                     
                         <td>
-                            <p id="task-status" class="task-status-pending">Pending</p>
                             {% for category in task.categories %}
                                 <a href="/category/{{category}}" class="category">
                                     <span class="task-category">{{category}}</span>
                                 </a>
                             {% endfor %}
                         </td>
+
                         <td class="tasks-table-actions">
-                        
                             <button id="btn-delete-{{task.id}}" class="btn-delete" onclick="deleteTask({{task.id}})">&#128465; Delete</button>
                     
                             <button id="btn-done-{{task.id}}" class="btn-done btn-done-{{task.id}}" onclick="doneTask({{task.id}})">Done</button>
@@ -78,12 +77,12 @@
         <table id="table-tasks" class="table-tasks-done hidden">
             <thead>
                 <tr>
-                    <th>Titulo</th>
-                    <th>Descripcion</th>
-                    <th>Fecha limite</th>
-                    <th>Proyecto</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Deadline</th>
+                    <th>Project</th>
+                    <th>Labels</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="done-tasks">
@@ -95,7 +94,11 @@
                             <td class="task-today">Today</td>
                         {% else %}
     
-                            <td>{{task.date_limit.day}}/{{task.date_limit.month}}/{{task.date_limit.year}}</td>
+                            <td>
+                                {{task.date_limit.day}}/{{task.date_limit.month}}/{{task.date_limit.year}}
+                                <br>
+                                Done: {{task.date_done.day}}/{{task.date_done.month}}/{{task.date_done.year}}
+                            </td>
                         {% endif %}
 
                         {% if task.project %}
@@ -105,7 +108,11 @@
                         {% endif %}
                     
                         <td>
-                            <p id="task-status" class="task-status-done">Done</p> {{task.date_done.day}}/{{task.date_done.month}}/{{task.date_done.year}}
+                            {% for category in task.categories %}
+                                <a href="/category/{{category}}" class="category">
+                                    <span class="task-category">{{category}}</span>
+                                </a>
+                            {% endfor %}
                         </td>
 
                         <td class="tasks-table-actions">
