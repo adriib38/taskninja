@@ -26,7 +26,9 @@
             <tbody id="undone-tasks">
                 {% for task in tasksPending %}
                     <tr id="task-{{task.id}}">
-                        <td>{{task.title}}</td>
+                        <td>
+                            <a href="{% url 'task' task.id %}">{{task.title}}</a>
+                        </td>
 
                         {% if task.description %}
                             <td>{{task.description}}</td>

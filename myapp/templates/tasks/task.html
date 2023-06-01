@@ -1,0 +1,23 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Task{% endblock %}
+
+{% block content %}
+   
+    <div style="display: flex; align-items: center;">
+        <h1>{{ task.title }}</h1>
+        {% if task.done %}
+            <span class="task-status-done">Done</span>
+        {% else %}
+            <span class="task-status-pending">Pending</span>
+        {% endif %}
+    </div>
+
+    <div>
+        Deadline: {{ task.date_limit }}
+    </div>
+
+    <p>{{ task.description }}</p>
+  
+
+{% endblock %}

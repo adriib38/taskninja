@@ -188,12 +188,13 @@ def tasks(request):
 
     # Añadir categorias a las tareas pendientes
     for task in tasksPending:
-        categoriesList = list(set(category.strip() for category in task.categories.split(';') if category.strip()))
+        categoriesList = list(set(category.strip(
+        ) for category in task.categories.split(';') if category.strip()))
         task.categories = categoriesList
 
-        #Convertir fecha task.date_limit para compararla con todayDate
+        # Convertir fecha task.date_limit para compararla con todayDate
         today = date.today().strftime("%d/%m/%Y")
-        #Almacenar fecha de la tarea en formato dd/mm/yyyy
+        # Almacenar fecha de la tarea en formato dd/mm/yyyy
         task.date_limit = task.date_limit.strftime("%d/%m/%Y")
         if today == task.date_limit:
             print(today)
@@ -203,7 +204,8 @@ def tasks(request):
 
     # Añadir categorias a las tareas completadas
     for task_done in tasksDone:
-        categoriesList = list(set(category.strip() for category in task_done.categories.split(';') if category.strip()))
+        categoriesList = list(set(category.strip(
+        ) for category in task_done.categories.split(';') if category.strip()))
         task_done.categories = categoriesList
 
     # Acortar descriciones
@@ -211,7 +213,6 @@ def tasks(request):
         task.description = task.description[:15] + '...'
     for task_done in tasksDone:
         task_done.description = task_done.description[:15] + '...'
-
 
     numTasks = len(tasksUser)
     return render(request, 'tasks/tasks.html', {
@@ -381,8 +382,28 @@ def team(request, id):
 '''
 Tasks
 '''
-# Task done
 
+#Task view
+@login_required
+def task(request, id):
+    task = get_object_or_404(Task, pk=id)
+
+    if task is None:
+        print("1No tienes permiso para ver esta tarea")
+        return redirect('tasks')
+
+    if task.user != request.user:
+        print("2No tienes permiso para ver esta tarea")
+        return redirect('tasks')
+    
+
+    
+    return render(request, 'tasks/task.html', {
+        'task': task,
+    })
+
+
+# Task done
 
 @login_required
 def done_task(request, id):
