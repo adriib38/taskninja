@@ -72,7 +72,6 @@ pycodestyle==2.10.0
 pyee==11.0.1
 Pygments==2.15.1
 pyparsing==3.0.9
-pypiwin32==223
 PySocks==1.7.1
 pytest==7.4.3
 pytest-base-url==2.0.0
