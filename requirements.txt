@@ -1,4 +1,4 @@
-﻿aiohttp==3.8.4
+aiohttp==3.8.4
 aiosignal==1.3.1
 anyio==4.0.0
 asgiref==3.7.2
@@ -72,6 +72,7 @@ pycodestyle==2.10.0
 pyee==11.0.1
 Pygments==2.15.1
 pyparsing==3.0.9
+pypiwin32==223
 PySocks==1.7.1
 pytest==7.4.3
 pytest-base-url==2.0.0
@@ -80,7 +81,6 @@ python-dateutil==2.8.2
 python-decouple==3.8
 python-slugify==8.0.1
 pytz==2023.3
-pypiwin32==305
 PyYAML==6.0.1
 pyzmq==25.1.0
 requests==2.28.2
